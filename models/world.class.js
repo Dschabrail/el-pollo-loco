@@ -1,8 +1,11 @@
 class World {
   character = new Character();
-  statusbar = [new StatusBar(0), new StatusBar(100), new StatusBar(200)];
+  statusBarHealth = new StatusBarHealth();
+  statusBarCoin = new StatusBarCoin();
+  statusBarBottle = new StatusBarBottle();
   level = level1;
   ctx;
+  bottles = 0;
   canvas;
   keyboard;
   camera_x = 0;
@@ -20,6 +23,7 @@ class World {
   run() {
     setInterval(() => {
       this.checkCollision();
+      this.checkCollisionBottle()
       this.checkThrowObject();
     }, 200);
   }
@@ -28,16 +32,37 @@ class World {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         this.character.damage();
-        console.log("character life", this.character.life);
         this.character.gameOver();
-        this.level.statusbar.setPercentage(this.character.life);
+        this.statusBarHealth.setPercentage(this.character.life);
       }
     });
   }
 
+  checkCollisionBottle() {
+    this.level.bottles.forEach((bottle) => {
+      if (this.character.isColliding(bottle)) {
+        this.bottles++;
+        this.level.bottles.splice(0, 1);
+      }
+    });
+  }
+
+  checkCollisionCoin() {
+    this.level.coins.forEach((coin) => {
+      if (this.character.isColliding(coin)) {
+        coins++;
+      }
+    });
+  }
+
+
+
   checkThrowObject() {
     if (this.keyboard.trow) {
-      let bottle = new ThrowableObject(this.character.x + 50, this.character.y + 100);
+      let bottle = new ThrowableObject(
+        this.character.x + 20,
+        this.character.y + 100
+      );
       this.throwableObject.push(bottle);
     }
   }
@@ -54,10 +79,14 @@ class World {
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObject);
+    this.addObjectsToMap(this.level.bottles);
+    this.addObjectsToMap(this.level.coins);
 
-   // this.ctx.translate(-this.camera_x, 0);
-    //this.addObjectsToMap(this.statusbar);
-    //this.ctx.translate(this.camera_x, 0);
+    this.ctx.translate(-this.camera_x, 0);
+    this.addToMap(this.statusBarHealth);
+    this.addToMap(this.statusBarCoin);
+    this.addToMap(this.statusBarBottle);
+    this.ctx.translate(this.camera_x, 0);
 
     this.ctx.globalCompositeOperation = "destination-over";
     this.addObjectsToMap(this.level.clouds);
