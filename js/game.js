@@ -5,7 +5,13 @@ let keyboard = new Keyboard();
 
 function init() {
   canvas = document.querySelector("canvas");
-  world = new World(canvas, keyboard)
+  world = new World(canvas, keyboard);
+  disableButton();
+}
+
+function disableButton() {
+  let button = document.getElementById('start-button');
+  button.classList.add('d-none');
 }
 
 window.addEventListener("keydown", (event) => {

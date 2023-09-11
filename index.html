@@ -6,10 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Pollo Loco</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="icon" type="image/x-icon" href="img/6_salsa_bottle/salsa_bottle.png">
 </head>
 
-<body onload="init()">
-    <canvas width="720px" height="480px"></canvas>
+<body>
+    <h1>El Pollo Loco</h1>
+    <div class="canvas" id="canvas">
+        <canvas width="720px" height="480px"></canvas>
+        <div onclick="init()" id="start-button">Start</div>
+    </div>
+
+
+    <div class="keyboard">
+        <div class="gap"><span class="key">D</span><span class="description">THROW</span></div>
+        <div class="gap"><span class="key">SPACE</span><span class="description">JUMP</span></div>
+        <div class="gap"><span class="key">←</span><span class="description">LEFT</span></div>
+        <div class="gap"><span class="key">→</span><span class="description">RIGHT</span></div>
+    </div>
 
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
@@ -18,10 +32,12 @@
     <script src="models/background.class.js"></script>
     <script src="models/character.class.js"></script>
     <script src="models/clouds.class.js"></script>
+    <script src="models/endboss.class.js"></script>
     <script src="models/status-bar-health.class.js"></script>
     <script src="models/status-bar-coin.class.js"></script>
     <script src="models/status-bar-bottle.class.js"></script>
-    <script src="models/endboss.class.js"></script>
+    <script src="models/status-bar-endboss.class.js"></script>
+    <script src="models/endboss-icon.class.js"></script>
     <script src="models/chicken.class.js"></script>
     <script src="models/chick.class.js"></script>
     <script src="models/coins.class.js"></script>

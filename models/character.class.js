@@ -3,6 +3,7 @@ class Character extends MovableObject {
   height = 220;
   speed = 5;
   width = 120;
+  gameOverInterval;
 
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -38,7 +39,7 @@ class Character extends MovableObject {
   IMAGES_HURT = [
     "img/2_character_pepe/4_hurt/H-41.png",
     "img/2_character_pepe/4_hurt/H-42.png",
-    "img/2_character_pepe/4_hurt/H-43.png"
+    "img/2_character_pepe/4_hurt/H-43.png",
   ];
 
   world;
@@ -51,7 +52,7 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
     this.animate();
-    this.moveRight();
+    this.gameOverAnimation();
     this.applyGravity();
   }
 
@@ -61,10 +62,10 @@ class Character extends MovableObject {
      */
     setInterval(() => {
       this.walking_sound.pause();
-      if (this.world.keyboard.right && this.x < this.world.level.level1_end_x) {
+      if (this.world.keyboard.right) {
         this.walking_sound.play();
       }
-      if (this.world.keyboard.left && this.x > 100) {
+      if (this.world.keyboard.left) {
         this.walking_sound.play();
       }
     }, 500);
@@ -73,7 +74,7 @@ class Character extends MovableObject {
      * The value of the x changes, when the key are pressed.
      */
     setInterval(() => {
-      if (this.world.keyboard.right && this.x < this.world.level.level1_end_x) {
+      if (this.world.keyboard.right && this.x < this.world.endboss.x) {
         this.moveRight();
         this.otherDirection = false;
       }
@@ -107,13 +108,6 @@ class Character extends MovableObject {
       }
     }, 200);
 
-    /** Changes the dead images, when the value is true. */
-    setInterval(() => {
-      if (this.gameOver()) {
-        this.playAnimation(this.IMAGES_DEAD);
-      }
-    }, 200);
-
     /** Changes the hurt images, when the value is true. */
     setInterval(() => {
       if (this.isHurt()) {
@@ -121,4 +115,19 @@ class Character extends MovableObject {
       }
     }, 200);
   }
+
+  /** Changes the dead images, when the value is true. */
+  gameOverAnimation() {
+    setInterval(() => {
+      if (this.gameOver()) {
+        this.playAnimation(this.IMAGES_DEAD);
+        setTimeout(() => {
+          this.world.clearAllIntervals();
+          this.gameOverImage()
+        }, 1000);
+       
+      }
+    }, 350);
+  }
+
 }

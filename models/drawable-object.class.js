@@ -29,7 +29,6 @@ class DrawableObject {
     }
   }
   
-
   drawFrame(ctx) {
     if (
       this instanceof Character ||
@@ -45,5 +44,10 @@ class DrawableObject {
       ctx.rect(this.x, this.y, this.width, this.height);
       ctx.stroke();
     }
+  }
+
+  gameOverImage() {
+    let canvas = document.getElementById('canvas');
+    canvas.classList.add('game-over');
   }
 }

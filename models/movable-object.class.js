@@ -69,4 +69,11 @@ class MovableObject extends DrawableObject {
       this.y < object.y + object.height
     );
   }
+
+  isOnObject(object) {
+    return (
+      this.x + this.width > object.x &&
+      this.y + this.height == object.y 
+    )
+  }
 }
