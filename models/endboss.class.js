@@ -8,6 +8,14 @@ class Endboss extends MovableObject {
   speed = 1.5;
   world;
 
+
+  offset = {
+    top: 50,
+    right: 15,
+    bottom: 5,
+    left: 15
+  };
+
   IMAGES_WALKING = [
     "img/4_enemie_boss_chicken/1_walk/G1.png",
     "img/4_enemie_boss_chicken/1_walk/G2.png",
@@ -56,13 +64,14 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_ATTACK);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
-
     this.animate();
   }
 
   animate() {
     this.firstContact();
     this.deadAnimation();
+    this.hurt();
+    this.attack();
   }
 
   firstContact() {
@@ -88,20 +97,39 @@ class Endboss extends MovableObject {
       if (this.life <= 0) {
         this.speed = 0;
         this.playAnimation(this.IMAGES_DEAD);
-        this.endTheGame();
+        setTimeout(() => {
+          this.endTheGame();
+        }, 100);
       }
-    }, 600);
+    }, 400);
   }
 
   endTheGame() {
     setTimeout(() => {
       this.world.clearAllIntervals();
-    }, 1000);
+      this.world.winTheGame();
+    }, 300);
   }
 
   move() {
     setInterval(() => {
       this.moveLeft();
     }, 1000 / 60);
+  }
+
+  hurt() {
+    setInterval(() => {
+    if (this.world.checkCollisionEndboss()) {
+      this.playAnimation(this.IMAGES_HURT)
+    }
+  }, 100)
+  }
+
+  attack() {
+    setInterval(() => {
+      if (this.world.character.x >= this.x) {
+        this.playAnimation(this.IMAGES_ATTACK)
+      }
+    }, 200);
   }
 }

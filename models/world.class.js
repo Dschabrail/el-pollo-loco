@@ -4,6 +4,7 @@ class World {
   statusBarCoin = new StatusBarCoin();
   statusBarBottle = new StatusBarBottle();
   statusBarEndboss = new StatusBarEndboss();
+  gameOver = new GameOverImage();
   icon = new Icon();
   level = initLevel();
   endboss = new Endboss();
@@ -33,6 +34,7 @@ class World {
       this.checkCollisionCoin();
       this.checkThrowObject();
       this.checkCollisionEndboss();
+      this.checkCollisionWithEndboss()
     }, 100);
   }
 
@@ -56,6 +58,14 @@ class World {
       }
     });
   }
+
+  checkCollisionWithEndboss() {
+      if (this.character.isColliding(this.endboss)) {
+        this.character.damage();
+        this.character.gameOver();
+        this.statusBarHealth.setPercentage(this.character.life);
+      }
+    }
 
   checkCollisionBottle() {
     this.level.bottles.forEach((bottle) => {
@@ -82,13 +92,16 @@ class World {
       if (this.endboss.isColliding(bottle)) {
         this.endboss.damage();
         this.endboss.gameOver();
+       setTimeout(() => {
+        this.throwableObject.splice(0, 1)
+       }, 100);
         this.statusBarEndboss.setPercentage(this.endboss.life);
       }
     });
   }
 
   checkThrowObject() {
-    if (this.keyboard.trow && this.bottles > 0) {
+    if (this.keyboard.throw && this.bottles > 0) {
       let bottle = new ThrowableObject(
         this.character.x + 20,
         this.character.y + 100
@@ -103,7 +116,6 @@ class World {
     setTimeout(() => {
       this.level.enemies.splice(this.level.enemies.indexOf(enemy), 1);
     }, 1000);
-    
   }
 
   setWorld() {
@@ -122,6 +134,7 @@ class World {
     this.addObjectsToMap(this.throwableObject);
     this.addObjectsToMap(this.level.bottles);
     this.addObjectsToMap(this.level.coins);
+    this.gameOverImage();
 
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusBarHealth);
@@ -152,9 +165,7 @@ class World {
     if (object.otherDirection) {
       this.flipImage(object);
     }
-
     object.draw(this.ctx);
-    object.drawFrame(this.ctx);
 
     if (object.otherDirection) {
       this.flipImageBack(object);
@@ -189,5 +200,38 @@ class World {
 
   clearAllIntervals() {
     for (let i = 1; i < 9999; i++) window.clearInterval(i);
+  }
+
+  gameOverImage() {
+    if (this.character.life == 0) {
+      const canvasX = this.character.x - 100;
+      this.gameOver.x = canvasX;
+      this.addToMap(this.gameOver);
+      this.restartButton();
+    }
+  }
+
+  restartButton() {
+    let button = document.getElementById("start-button");
+    button.innerHTML = "RESTART";
+    button.classList.remove("d-none");
+    button.addEventListener("click", () => {
+      this.character.life = 100;
+    });
+  }
+
+  winTheGame(){
+    let canvas = document.getElementById('canvas');
+    let container = document.getElementById('win-div');
+
+    canvas.classList.add('d-none');
+    container.classList.remove('d-none');
+    this.restartButton();
+    this.coinNumber();
+  }
+
+  coinNumber() {
+    let number = document.getElementById('coins-number');
+    number.innerHTML = `${this.coins}`
   }
 }

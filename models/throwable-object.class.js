@@ -1,4 +1,5 @@
 class ThrowableObject extends MovableObject {
+
   BOTTLE_ROTATION = [
     "img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png",
     "img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png",
@@ -13,6 +14,10 @@ class ThrowableObject extends MovableObject {
     this.y = y;
     this.height = 60;
     this.width = 50;
+    this.animate();
+  }
+
+  animate() {
     this.throw();
   }
 

@@ -28,26 +28,4 @@ class DrawableObject {
       console.log('Could not load Image', this.img)
     }
   }
-  
-  drawFrame(ctx) {
-    if (
-      this instanceof Character ||
-      this instanceof Chicken ||
-      this instanceof Endboss ||
-      this instanceof Chick ||
-      this instanceof Bottles ||
-      this instanceof Coins 
-    ) {
-      ctx.beginPath();
-      ctx.lineWidth = "5";
-      ctx.strokeStyle = "blue";
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
-    }
-  }
-
-  gameOverImage() {
-    let canvas = document.getElementById('canvas');
-    canvas.classList.add('game-over');
-  }
 }

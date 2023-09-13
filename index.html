@@ -12,9 +12,21 @@
 
 <body>
     <h1>El Pollo Loco</h1>
-    <div class="canvas" id="canvas">
-        <canvas width="720px" height="480px"></canvas>
+    <div class="canvas">
+        <div id="win-div" class="win-container d-none">
+            <h2>YOU WIN!</h2>
+            <span class="coin-number-info">COLLECTED COINS: <span id="coins-number"></span></span>
+        </div>
+        <canvas id="canvas" width="720px" height="480px"></canvas>
         <div onclick="init()" id="start-button">Start</div>
+        <div class="panels d-none">
+            <div class="panels1"><img id="btnLeft" class="panel-img" src="img/keys/left.png">
+                <img id="btnRight" class="panel-img" src="img/keys/right.png">
+            </div>
+            <div class="panels2"><img id="btnUp" class="panel-img" src="img/keys/up.png">
+                <img id="btnThrow" class="panel-img" src="img/keys/bottle.png">
+            </div>
+        </div>
     </div>
 
 
@@ -30,6 +42,7 @@
     <script src="models/throwable-object.class.js"></script>
     <script src="models/keyboard.class.js"></script>
     <script src="models/background.class.js"></script>
+    <script src="models/game-over.class.js"></script>
     <script src="models/character.class.js"></script>
     <script src="models/clouds.class.js"></script>
     <script src="models/endboss.class.js"></script>
@@ -47,5 +60,4 @@
     <script src="models/level1.js"></script>
     <script src="js/game.js"></script>
 </body>
-
 </html>

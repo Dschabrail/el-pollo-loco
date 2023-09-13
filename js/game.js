@@ -6,7 +6,17 @@ let keyboard = new Keyboard();
 function init() {
   canvas = document.querySelector("canvas");
   world = new World(canvas, keyboard);
+  newGame();
+}
+
+function newGame() {
+  let canvas = document.getElementById('canvas');
+  let container = document.getElementById('win-div');
+
+  canvas.classList.remove('d-none');
+  container.classList.add('d-none');
   disableButton();
+  
 }
 
 function disableButton() {
@@ -14,39 +24,7 @@ function disableButton() {
   button.classList.add('d-none');
 }
 
-window.addEventListener("keydown", (event) => {
-  if(event.keyCode == 39) {
-    keyboard.right = true;
-  }
-
-  if(event.keyCode == 37) {
-    keyboard.left = true;
-  }
-
-  if(event.keyCode == 32) {
-    keyboard.jump = true;
-  }
-
-  if(event.keyCode == 68) {
-    keyboard.trow = true;
-  }
-})
-
-
-window.addEventListener("keyup", (event) => {
-  if(event.keyCode == 39) {
-    keyboard.right = false;
-  }
-
-  if(event.keyCode == 37) {
-    keyboard.left = false;
-  }
-
-  if(event.keyCode == 32) {
-    keyboard.jump = false;
-  }
-
-  if(event.keyCode == 68) {
-    keyboard.trow = false;
-  }
-})
+function coinNumber() {
+  let number = document.getElementById('coins-number');
+  number.innerHTML = `${world.coins.length}`
+}

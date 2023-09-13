@@ -6,6 +6,13 @@ class MovableObject extends DrawableObject {
   life = 100;
   lastHit = 0;
 
+  offset = {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0
+  };
+
   applyGravity() {
     setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -63,10 +70,10 @@ class MovableObject extends DrawableObject {
 
   isColliding(object) {
     return (
-      this.x + this.width > object.x &&
-      this.y + this.height > object.y &&
-      this.x < object.x &&
-      this.y < object.y + object.height
+      this.x + this.width - this.offset.right > object.x + object.offset.left &&
+      this.y + this.height - this.offset.bottom > object.y + object.offset.top &&
+      this.x + this.offset.left < object.x + object.width - object.offset.right &&
+      this.y + this.offset.top < object.y + object.height - object.offset.bottom
     );
   }
 
