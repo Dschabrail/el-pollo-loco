@@ -8,12 +8,11 @@ class Endboss extends MovableObject {
   speed = 1.5;
   world;
 
-
   offset = {
     top: 50,
     right: 15,
     bottom: 5,
-    left: 15
+    left: 15,
   };
 
   IMAGES_WALKING = [
@@ -74,13 +73,13 @@ class Endboss extends MovableObject {
     this.attack();
   }
 
+  /**
+   * Initiates the first contact behavior, switching between alert and walking animations.
+   */
   firstContact() {
     setInterval(() => {
-      if (this.i < 10) {
-        this.playAnimation(this.IMAGES_ALERT);
-      } else {
-        this.playAnimation(this.IMAGES_WALKING);
-      }
+      if (this.i < 10) {this.playAnimation(this.IMAGES_ALERT);} 
+      else {this.playAnimation(this.IMAGES_WALKING);}
       this.i++;
       if (this.world.character.x > 2200 && !this.hadFirstContact) {
         this.i = 0;
@@ -92,11 +91,17 @@ class Endboss extends MovableObject {
     }, 200);
   }
 
+  /**
+   * Initiates the dead animation and ends the game when the life reaches zero.
+   */
   deadAnimation() {
     setInterval(() => {
       if (this.life <= 0) {
         this.speed = 0;
         this.playAnimation(this.IMAGES_DEAD);
+        if (this.world.sounds.playSound == true) {
+          this.world.sounds.chicken_sound.play();
+        }
         setTimeout(() => {
           this.endTheGame();
         }, 100);
@@ -104,6 +109,9 @@ class Endboss extends MovableObject {
     }, 400);
   }
 
+  /**
+   * Ends the game after a delay when the character dies.
+   */
   endTheGame() {
     setTimeout(() => {
       this.world.clearAllIntervals();
@@ -111,24 +119,33 @@ class Endboss extends MovableObject {
     }, 300);
   }
 
+  /**
+   * Initiates the movement of the object.
+   */
   move() {
     setInterval(() => {
       this.moveLeft();
     }, 1000 / 60);
   }
 
+  /**
+   * Initiates the hurt animation when the object is hurt.
+   */
   hurt() {
     setInterval(() => {
-    if (this.world.checkCollisionEndboss()) {
-      this.playAnimation(this.IMAGES_HURT)
-    }
-  }, 100)
+      if (this.isHurt()) {
+        this.playAnimation(this.IMAGES_HURT);
+      }
+    }, 100);
   }
 
+  /**
+   * Initiates the attack animation when the character is within range.
+   */
   attack() {
     setInterval(() => {
       if (this.world.character.x >= this.x) {
-        this.playAnimation(this.IMAGES_ATTACK)
+        this.playAnimation(this.IMAGES_ATTACK);
       }
     }, 200);
   }

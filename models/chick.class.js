@@ -10,38 +10,42 @@ class Chick extends MovableObject {
     "img/3_enemies_chicken/chicken_small/1_walk/3_w.png",
   ];
 
-  chicken_sound = new Audio("audio/chicken.mp3");
+  IMAGE_DEAD = ["img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
 
   constructor(x) {
     super().loadImage("img/3_enemies_chicken/chicken_small/1_walk/1_w.png");
-
     this.x = x;
     this.loadImages(this.IMAGES_WALKING);
+    this.loadImages(this.IMAGE_DEAD);
     this.animate();
     this.speed = 0.15 + Math.random() * 0.5;
   }
 
   animate() {
-    setInterval(() => {
-      this.moveLeft();
-    }, 1000 / 60);
+    this.move();
+    this.dead();
+  }
 
+  /**
+   * Plays animation if the chicken is dead.
+   */
+  dead() {
     setInterval(() => {
       if (this.life == 0) {
         this.speed = 0;
-        this.loadImage("img/3_enemies_chicken/chicken_small/2_dead/dead.png");
-        this.chickenAudio();
+        this.playAnimation(this.IMAGE_DEAD);
       } else {
         this.playAnimation(this.IMAGES_WALKING);
       }
     }, 150);
   }
 
-  chickenAudio() {
-    this.chicken_sound.play();
-    setTimeout(() => {
-      this.chicken_sound.pause();
-      this.chicken_sound.currentTime = 0;
-    }, 1200);
+  /**
+   * The object moves left.
+   */
+  move() {
+    setInterval(() => {
+      this.moveLeft();
+    }, 1000 / 60);
   }
 }

@@ -3,7 +3,9 @@ class Character extends MovableObject {
   height = 220;
   speed = 5;
   width = 120;
-  gameOverInterval;
+  world;
+  idleTime = 0;
+  idleInterval = null;
 
   offset = {
     top: 85,
@@ -62,8 +64,18 @@ class Character extends MovableObject {
     "img/2_character_pepe/1_idle/idle/I-10.png",
   ];
 
-  world;
-  walking_sound = new Audio("audio/running.mp3");
+  IMAGES_LONG_IDLE = [
+    "img/2_character_pepe/1_idle/long_idle/I-11.png",
+    "img/2_character_pepe/1_idle/long_idle/I-12.png",
+    "img/2_character_pepe/1_idle/long_idle/I-13.png",
+    "img/2_character_pepe/1_idle/long_idle/I-14.png",
+    "img/2_character_pepe/1_idle/long_idle/I-15.png",
+    "img/2_character_pepe/1_idle/long_idle/I-16.png",
+    "img/2_character_pepe/1_idle/long_idle/I-17.png",
+    "img/2_character_pepe/1_idle/long_idle/I-18.png",
+    "img/2_character_pepe/1_idle/long_idle/I-19.png",
+    "img/2_character_pepe/1_idle/long_idle/I-20.png",
+  ];
 
   constructor() {
     super().loadImage("img/2_character_pepe/1_idle/idle/I-1.png");
@@ -72,72 +84,31 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_IDLE);
+    this.loadImages(this.IMAGES_LONG_IDLE);
     this.animate();
-    this.gameOverAnimation();
     this.applyGravity();
   }
 
   animate() {
-    /**
-     * Plays the running sound, if the query matches.
-     */
-    setInterval(() => {
-      this.walking_sound.pause();
-      if (this.world.keyboard.right) {
-        this.walking_sound.play();
-      }
-      if (this.world.keyboard.left) {
-        this.walking_sound.play();
-      }
-    }, 500);
-
-    /**
-     * The value of the x changes, when the key are pressed.
-     */
-    setInterval(() => {
-      if (this.world.keyboard.right && this.x < this.world.endboss.x) {
-        this.moveRight();
-        this.otherDirection = false;
-      }
-
-      if (this.world.keyboard.left && this.x > 100) {
-        this.moveLeft();
-        this.otherDirection = true;
-      }
-
-      if (this.world.keyboard.jump && !this.isAboveGround()) {
-        this.jump();
-      }
-      this.world.camera_x = -this.x + 100;
-    }, 1000 / 60);
-
-    /**
-     * Changes the walking images, when the key are pressed.
-     */
-    setInterval(() => {
-      if (this.world.keyboard.right || this.world.keyboard.left) {
-        this.playAnimation(this.IMAGES_WALKING);
-      }
-    }, 100);
-
-    /**
-     * Changes the jumping images, when the key are pressed.
-     */
-    setInterval(() => {
-      if (this.isAboveGround() || this.speedY > 0) {
-        this.playAnimation(this.IMAGES_JUMPING);
-      }
-    }, 200);
-
-    /** Changes the hurt images, when the value is true. */
-    setInterval(() => {
-      if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-      }
-    }, 200);
-
+    this.walkingSound();
+    this.move();
+    this.walkingImages();
+    this.hurtImages();
+    this.jumpingImages();
     this.gameOverAnimation();
     this.idleAnimation();
+  }
+
+  /**Plays the running sound, if the query matches.*/
+  walkingSound() {
+    setInterval(() => {
+      this.world.sounds.walking_sound.pause();
+      if (this.world.keyboard.right || this.world.keyboard.left) {
+        if (this.world.sounds.playSound == true) {
+          this.world.sounds.walking_sound.play();
+        }
+      }
+    }, 200);
   }
 
   /** Changes the dead images, when the value is true. */
@@ -147,16 +118,116 @@ class Character extends MovableObject {
         this.playAnimation(this.IMAGES_DEAD);
         setTimeout(() => {
           this.world.clearAllIntervals();
-        }, 1000);
+        }, 350);
       }
-    }, 350);
+    }, 100);
   }
 
+  /**
+   * If the character is not moving, play the idle animation.
+   */
   idleAnimation() {
     setInterval(() => {
       if (!this.isAboveGround() && this.world.keyboard.nothing) {
         this.playAnimation(this.IMAGES_IDLE);
+        this.startIdleTimer();
+      } else {
+        this.stopIdleTimer();
       }
     }, 350);
+  }
+
+  /**
+   * Starts monitoring for inactivity.
+   */
+  startIdleTimer() {
+    if (!this.idleInterval) {
+      this.idleInterval = setInterval(() => {
+        this.idleTime += 0.2;
+        if (this.idleTime >= 2.6) {
+          this.longIdleAnimation();
+        }
+      }, 200);
+    }
+  }
+
+  /**
+   * Stops monitoring for inactivity and resets idleTime.
+   */
+  stopIdleTimer() {
+    if (this.idleInterval) {
+      clearInterval(this.idleInterval);
+      this.idleInterval = null;
+      this.idleTime = 0;
+    }
+  }
+
+  /**
+   * The long idle animation plays after 4 seconds of inactivity.
+   */
+  longIdleAnimation() {
+    if (!this.isAboveGround() && this.world.keyboard.nothing) {
+      this.playAnimation(this.IMAGES_LONG_IDLE);
+    }
+  }
+
+  /**
+   * The value of the x changes, when the key are pressed.
+   */
+  move() {
+    setInterval(() => {
+      if (!this.gameOver()) {
+        if (this.world.keyboard.right && this.x < this.world.endboss.x) {
+          this.moveRight();
+          this.otherDirection = false;
+        }
+        if (this.world.keyboard.left && this.x > 100) {
+          this.moveLeft();
+          this.otherDirection = true;
+        }
+        if (this.world.keyboard.jump && !this.isAboveGround()) {
+          this.jump();
+        }
+        this.world.camera_x = -this.x + 100;
+      }
+    }, 1000 / 60);
+  }
+
+  /**
+   * Changes the walking images, when the key are pressed.
+   */
+  walkingImages() {
+    setInterval(() => {
+      if (this.world.keyboard.right || this.world.keyboard.left) {
+        this.playAnimation(this.IMAGES_WALKING);
+      }
+    }, 100);
+  }
+
+  /** Changes the hurt images and adds sound, when the value is true. */
+  hurtImages() {
+    setInterval(() => {
+      if (this.isHurt()) {
+        this.playAnimation(this.IMAGES_HURT);
+        if (this.world.sounds.playSound == true) {
+          this.world.sounds.hurt_sound.play();
+          setTimeout(() => {
+            this.world.sounds.hurt_sound.pause();
+            this.world.sounds.hurt_sound.currentTime = 0;
+          }, 400);
+        }
+      }
+    }, 200);
+  }
+
+  /**
+   * Changes the jumping images, when the key are pressed.
+   */
+  jumpingImages() {
+    setInterval(() => {
+      if (this.isAboveGround() || this.speedY > 0) {
+        this.playAnimation(this.IMAGES_JUMPING);
+      }
+    }, 200);
   }
 }

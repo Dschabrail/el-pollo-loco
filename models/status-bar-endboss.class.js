@@ -11,9 +11,7 @@ class StatusBarEndboss extends DrawableObject {
     "img/7_statusbars/2_statusbar_endboss/statusbar/0.png",
   ];
 
-  ICON = [
-    'img/7_statusbars/3_icons/icon_health_endboss.png'
-  ]
+  ICON = ["img/7_statusbars/3_icons/icon_health_endboss.png"];
 
   constructor() {
     super();
@@ -24,12 +22,20 @@ class StatusBarEndboss extends DrawableObject {
     this.setPercentage(100);
   }
 
+  /**
+   * Sets the percentage value for the bottle status bar and updates its image.
+   * @param {number} percentage - The percentage value to set for the status bar.
+   */
   setPercentage(percentage) {
     this.percentage = percentage;
     let path = this.STATUSBAR[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
 
+  /**
+   * Resolves the image index based on the current percentage value.
+   * @returns {number} - The index representing the appropriate image for the percentage.
+   */
   resolveImageIndex() {
     if (this.percentage == 100 || this.percentage == 90) {
       return 0;

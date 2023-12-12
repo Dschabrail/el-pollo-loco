@@ -13,6 +13,7 @@
 <body>
     <h1>El Pollo Loco</h1>
     <div class="canvas">
+        <img onclick="toggleVolumeImg()" id="volume-img" src="img/info/volume-off.png">
         <div id="win-div" class="win-container d-none">
             <h2>YOU WIN!</h2>
             <span class="coin-number-info">COLLECTED COINS: <span id="coins-number"></span></span>
@@ -26,6 +27,14 @@
             <div class="panels2"><img id="btnUp" class="panel-img" src="img/keys/up.png">
                 <img id="btnThrow" class="panel-img" src="img/keys/bottle.png">
             </div>
+        </div>
+    </div>
+    <div class="info">
+        <span class="info-text">ROTATE YOUR PHONE</span>
+        <div class="images">
+            <img class="image1" src="img/info/phone.png">
+            <img class="image2" src="img/info/rotate.png">
+            <img class="image3" src="img/info/phone-rotate.png">
         </div>
     </div>
 
@@ -55,9 +64,11 @@
     <script src="models/chick.class.js"></script>
     <script src="models/coins.class.js"></script>
     <script src="models/bottles.class.js"></script>
+    <script src="models/soundboard.class.js"></script>
     <script src="models/world.class.js"></script>
     <script src="level/level.class.js"></script>
     <script src="models/level1.js"></script>
     <script src="js/game.js"></script>
 </body>
+
 </html>
